@@ -12,6 +12,7 @@ const app = express();
 
 swaggerDocs(app);
 
+
 const PORT = process.env.PORT || 3000;
 
 dbConnection();

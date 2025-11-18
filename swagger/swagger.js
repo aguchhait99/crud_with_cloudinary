@@ -1,5 +1,6 @@
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const path = require("path");
 
 const options = {
     definition: {
@@ -11,14 +12,15 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:3001",
-                description: "Local server",
+                url: process.env.NODE_ENV === 'production' ? "https://crud-with-claudinary.vercel.app" : `http://localhost:${process.env.PORT || 3000}`,
+                description: process.env.NODE_ENV === 'production' ? "Production server" : "Local server",
             },
         ],
     },
-
-    // Path to routes/controllers where Swagger comments are written
-    apis: ["./app/router/*.js", "./controllers/*.js"],
+    apis: [
+        path.join(__dirname, "../app/router/*.js"),
+        path.join(__dirname, "../app/controller/*.js"),
+    ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
@@ -26,7 +28,7 @@ const swaggerSpec = swaggerJsdoc(options);
 function swaggerDocs(app) {
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-    console.log("📄 Swagger Docs available at http://localhost:3001/api-docs");
+    console.log(`📄 Swagger Docs available at ${process.env.NODE_ENV === 'production' ? 'https://crud-with-claudinary.vercel.app' : `http://localhost:${process.env.PORT || 3000}`}/api-docs`);
 }
 
 module.exports = swaggerDocs;
