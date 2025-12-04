@@ -13,7 +13,7 @@ const options = {
         servers: [
             {
                 url: process.env.BASE_URL || (process.env.NODE_ENV === 'production'
-                    ? `https://${process.env.VERCEL_URL || 'crud-with-claudinary.vercel.app'}`
+                    ? `https://${process.env.VERCEL_URL || 'crud-with-cloudinary.onrender.com'}`
                     : `http://localhost:${process.env.PORT || 3000}`),
                 description: process.env.NODE_ENV === 'production' ? "Production server" : "Local server",
             },
