@@ -12,12 +12,15 @@ const options = {
         },
         servers: [
             {
-                url: process.env.NODE_ENV === 'production' ? "https://crud-with-claudinary.vercel.app" : `http://localhost:${process.env.PORT || 3000}`,
+                url: process.env.BASE_URL || (process.env.NODE_ENV === 'production'
+                    ? `https://${process.env.VERCEL_URL || 'crud-with-claudinary.vercel.app'}`
+                    : `http://localhost:${process.env.PORT || 3000}`),
                 description: process.env.NODE_ENV === 'production' ? "Production server" : "Local server",
             },
         ],
     },
     apis: [
+        // use __dirname-based paths so swagger-jsdoc can find JSDoc files after deployment
         path.join(__dirname, "../app/router/*.js"),
         path.join(__dirname, "../app/controller/*.js"),
     ],
@@ -26,9 +29,13 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 function swaggerDocs(app) {
-    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    // enable explorer for easier navigation
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
-    console.log(`📄 Swagger Docs available at ${process.env.NODE_ENV === 'production' ? 'https://crud-with-claudinary.vercel.app' : `http://localhost:${process.env.PORT || 3000}`}/api-docs`);
+    const baseUrl = process.env.BASE_URL || (process.env.NODE_ENV === 'production'
+        ? `https://${process.env.VERCEL_URL || 'crud-with-claudinary.vercel.app'}`
+        : `http://localhost:${process.env.PORT || 3000}`);
+    console.log(`📄 Swagger Docs available at ${baseUrl}/api-docs`);
 }
 
 module.exports = swaggerDocs;
